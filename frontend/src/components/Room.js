@@ -87,7 +87,7 @@ export default function Room(props) {
                         votesToSkip={roomData.votesToSkip}
                         guestCanPause={roomData.guestCanPause}
                         roomCode={roomCode}
-                        updateCallback={() => {}}
+                        updateCallback={getRoomDetails}
                     ></CreateRoomPage>
                 </Grid>
                 <Grid item xs={12} align="center">
@@ -103,8 +103,7 @@ export default function Room(props) {
         );
     };
 
-    // this is equivalent to getRoomDetails()
-    useEffect(() => {
+    function getRoomDetails() {
         fetch("/api/get-room" + "?code=" + roomCode)
             .then((response) => {
                 if (!response.ok) {
@@ -122,6 +121,10 @@ export default function Room(props) {
                     isHost: data.is_host,
                 });
             });
+    }
+    // this is equivalent to getRoomDetails()
+    useEffect(() => {
+        getRoomDetails();
     }, [roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
 
     if (roomData.showSettings) {
