@@ -35,13 +35,12 @@ import CreateRoomPage from "./CreateRoomPage";
 
 export default function Room(props) {
     const navigate = useNavigate();
-    const initialState = {
+    const [roomData, setRoomData] = useState({
         votesToSkip: 2,
-        guestCanPause: false,
+        guestCanPause: "false",
         isHost: false,
         showSettings: false,
-    };
-    const [roomData, setRoomData] = useState(initialState);
+    });
     const { roomCode } = useParams();
 
     const leaveButtonPressed = (e) => {
@@ -85,7 +84,7 @@ export default function Room(props) {
                     <CreateRoomPage
                         update={true}
                         votesToSkip={roomData.votesToSkip}
-                        guestCanPause={roomData.guestCanPause}
+                        guestCanPause={roomData.guestCanPause.toString()}
                         roomCode={roomCode}
                         updateCallback={getRoomDetails}
                     ></CreateRoomPage>
@@ -125,7 +124,7 @@ export default function Room(props) {
     // this is equivalent to getRoomDetails()
     useEffect(() => {
         getRoomDetails();
-    }, [roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
+    }, [roomCode]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
 
     if (roomData.showSettings) {
         return renderSettings();
