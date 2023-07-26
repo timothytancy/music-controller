@@ -68,9 +68,10 @@ export default function CreateRoomPage(props) {
     //     updateCallback: () => {},
     // };
 
-    const [defaultVotes, setdefaultVotes] = useState(2);
-    const [guestCanPause, setguestCanPause] = useState(true);
-    const [votesToSkip, setgvotesToSkip] = useState(defaultVotes);
+    const [guestCanPause, setguestCanPause] = useState(
+        props.guestCanPause || "true"
+    );
+    const [votesToSkip, setgvotesToSkip] = useState(props.votesToSkip || 2);
     const [errorMsg, seterrorMsg] = useState("");
     const [successMsg, setsuccessMsg] = useState("");
 
@@ -204,7 +205,7 @@ export default function CreateRoomPage(props) {
                     </FormHelperText>
                     <RadioGroup
                         row
-                        defaultValue={guestCanPause.toString()}
+                        value={guestCanPause}
                         // when this is changed, call handler function for changing value
                         onChange={handleGuestCanPauseChange}
                     >
@@ -231,7 +232,7 @@ export default function CreateRoomPage(props) {
                     <TextField
                         required={true}
                         type="number"
-                        defaultValue={votesToSkip.toString()}
+                        defaultValue={votesToSkip}
                         inputProps={{
                             min: 1,
                             style: { textAlign: "center" },
