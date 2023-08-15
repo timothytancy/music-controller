@@ -98,6 +98,7 @@ export default function CreateRoomPage(props) {
             .then((response) => response.json())
             .then((data) => navigate("/room/" + data.code));
     };
+
     const handleUpdateButtonPressed = () => {
         const requestOptions = {
             method: "PATCH", // match patch api endpoint

@@ -43,6 +43,24 @@ export default function Room(props) {
     });
     const { roomCode } = useParams();
 
+    const authenticateSpotify = () => {
+        fetch("/spotify/is-authenticated")
+            .then((response) => response.json())
+            .then((data) => {
+                setRoomData({ ...roomData, spotifyAuthenticated: data.status });
+                if (!data.status) {
+                    fetch("/spotify/get-auth-url")
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // redirect to spotify authentication page
+                            console.log(data);
+                            window.location.replace(data.url);
+                        });
+                }
+                console.log(data);
+            });
+    };
+
     const leaveButtonPressed = (e) => {
         const requestOptions = {
             method: "POST",
@@ -119,6 +137,10 @@ export default function Room(props) {
                     guestCanPause: data.guest_can_pause,
                     isHost: data.is_host,
                 });
+                if (data.is_host) {
+                    console.log("authenticating...");
+                    authenticateSpotify();
+                }
             });
     }
     // this is equivalent to getRoomDetails()
@@ -138,7 +160,7 @@ export default function Room(props) {
             </Grid>
             <Grid item xs={12} align="center">
                 <Typography variant="h6" component="h6">
-                    Votes: {roomData.votesToSkip}
+                    Votes: {roomData.votesToSkip.toString()}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
