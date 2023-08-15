@@ -5,6 +5,7 @@ from requests import Request, post
 from rest_framework import status
 from rest_framework.response import Response
 from .util import *
+from .util import is_spotify_authenticated
 from api.models import Room
 import requests
 
