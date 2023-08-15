@@ -84,5 +84,4 @@ class CurrentSong(APIView):
         host = room.host
         endpoint = "/player/currently-playing"
         response = execute_spotify_api_request(host, endpoint)
-        print(response)
         return Response(response, status=status.HTTP_200_OK)

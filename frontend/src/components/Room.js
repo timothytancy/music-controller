@@ -47,17 +47,14 @@ export default function Room(props) {
         fetch("/spotify/is-authenticated")
             .then((response) => response.json())
             .then((data) => {
-                setRoomData({ ...roomData, spotifyAuthenticated: data.status });
                 if (!data.status) {
                     fetch("/spotify/get-auth-url")
                         .then((response) => response.json())
                         .then((data) => {
                             // redirect to spotify authentication page
-                            console.log(data);
                             window.location.replace(data.url);
                         });
                 }
-                console.log(data);
             });
     };
 
@@ -131,6 +128,7 @@ export default function Room(props) {
                 return response.json();
             })
             .then((data) => {
+                console.log(data);
                 setRoomData({
                     ...roomData,
                     votesToSkip: data.votes_to_skip,
@@ -138,6 +136,7 @@ export default function Room(props) {
                     isHost: data.is_host,
                 });
                 if (data.is_host) {
+                    console.log(roomData);
                     console.log("authenticating...");
                     authenticateSpotify();
                 }
@@ -146,7 +145,7 @@ export default function Room(props) {
     // this is equivalent to getRoomDetails()
     useEffect(() => {
         getRoomDetails();
-    }, [roomCode]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
+    }, [roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
 
     if (roomData.showSettings) {
         return renderSettings();
