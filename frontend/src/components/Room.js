@@ -41,6 +41,7 @@ export default function Room(props) {
         isHost: false,
         showSettings: false,
     });
+    const [song, setSong] = useState({});
     const { roomCode } = useParams();
 
     const authenticateSpotify = () => {
@@ -55,6 +56,22 @@ export default function Room(props) {
                             window.location.replace(data.url);
                         });
                 }
+            });
+    };
+
+    const getCurrentSong = () => {
+        fetch("/spotify/current-song")
+            .then((response) => {
+                if (!response.ok) {
+                    console.log("response not ok");
+                    return {};
+                } else {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                setSong(data);
+                console.log(data);
             });
     };
 
@@ -128,7 +145,6 @@ export default function Room(props) {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
                 setRoomData({
                     ...roomData,
                     votesToSkip: data.votes_to_skip,
@@ -150,6 +166,8 @@ export default function Room(props) {
     if (roomData.showSettings) {
         return renderSettings();
     }
+
+    getCurrentSong();
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
@@ -167,9 +185,15 @@ export default function Room(props) {
                     Guest Can Pause: {roomData.guestCanPause.toString()}
                 </Typography>
             </Grid>
+
             <Grid item xs={12} align="center">
                 <Typography variant="h6" component="h6">
-                    Host: {roomData.isHost.toString()}
+                    Song: {song.title}
+                </Typography>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <Typography variant="h6" component="h6">
+                    Artist: {song.artist}
                 </Typography>
             </Grid>
             {roomData.isHost ? renderSettingsButton() : null}

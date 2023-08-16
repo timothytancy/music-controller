@@ -80,8 +80,40 @@ class CurrentSong(APIView):
         room_code = self.request.session.get("room_code")
         # user might not be host
         # if not host, then find room, find host of room, and use host's data to retrieve song info
-        room = Room.objects.filter(code=room_code)[0]
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response(response, status.HTTP_404_NOT_FOUND)
         host = room.host
-        endpoint = "/player/currently-playing"
+        endpoint = "player/currently-playing"
         response = execute_spotify_api_request(host, endpoint)
-        return Response(response, status=status.HTTP_200_OK)
+
+        if "error" in response or "item" not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        item = response.get("item")
+        duration = item.get("duration_ms")
+        progress = response.get("progress_ms")
+        album_cover = item.get("album").get("images")[0]
+        is_playing = response.get("is_playing")
+        song_id = item.get("id")
+
+        artist_string = ""
+        for i, artist in enumerate(item.get("artists")):
+            if i > 0:
+                artist_string += ", "
+            artist_string += artist.get("name")
+
+        song = {
+            "title": item.get("name"),
+            "artist": artist_string,
+            "duration": duration,
+            "time": progress,
+            "image_url": album_cover,
+            "is_playing": is_playing,
+            "votes": 0,
+            "id": song_id,
+        }
+
+        return Response(song, status=status.HTTP_200_OK)
