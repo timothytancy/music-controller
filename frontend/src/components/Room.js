@@ -1,37 +1,8 @@
-// import { touchRippleClasses } from "@mui/material";
-// import React, { Component } from "react";
-// import { useParams } from "react-router-dom";
-
-// export default class Room extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             votesToSkip: 2,
-//             guestCanPause: false,
-//             isHost: false,
-//         };
-//         // props.match stores information of how we get this element from react router
-//         // we get roomCode from the url, format specified in HomePage.js
-//         // this.roomCode = this.props.match.params.roomCode;
-//         const { roomCode } = useParams();
-//     }
-
-//     render() {
-//         return (
-//             <div>
-//                 <h3>{roomCode}</h3>
-//                 <p>Votes: {this.state.votesToSkip}</p>
-//                 <p>Guest Can Pause: {this.state.guestCanPause}</p>
-//                 <p>Host: {this.state.isHost}</p>
-//             </div>
-//         );
-//     }
-// }
-
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Grid, Button, Typography } from "@mui/material";
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 export default function Room(props) {
     const navigate = useNavigate();
@@ -43,6 +14,11 @@ export default function Room(props) {
     });
     const [song, setSong] = useState({});
     const { roomCode } = useParams();
+
+    // this is equivalent to getRoomDetails()
+    useEffect(() => {
+        getRoomDetails();
+    }, [roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
 
     const authenticateSpotify = () => {
         fetch("/spotify/is-authenticated")
@@ -63,7 +39,6 @@ export default function Room(props) {
         fetch("/spotify/current-song")
             .then((response) => {
                 if (!response.ok) {
-                    console.log("response not ok");
                     return {};
                 } else {
                     return response.json();
@@ -158,10 +133,6 @@ export default function Room(props) {
                 }
             });
     }
-    // this is equivalent to getRoomDetails()
-    useEffect(() => {
-        getRoomDetails();
-    }, [roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
 
     if (roomData.showSettings) {
         return renderSettings();
@@ -187,15 +158,9 @@ export default function Room(props) {
             </Grid>
 
             <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">
-                    Song: {song.title}
-                </Typography>
+                <MusicPlayer {...{ ...song }}></MusicPlayer>
             </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">
-                    Artist: {song.artist}
-                </Typography>
-            </Grid>
+
             {roomData.isHost ? renderSettingsButton() : null}
             <Grid item xs={12} align="center">
                 <Button
