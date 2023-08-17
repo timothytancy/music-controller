@@ -146,16 +146,6 @@ export default function Room(props) {
                     Code: {roomCode}
                 </Typography>
             </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">
-                    Votes: {roomData.votesToSkip.toString()}
-                </Typography>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">
-                    Guest Can Pause: {roomData.guestCanPause.toString()}
-                </Typography>
-            </Grid>
 
             <Grid item xs={12} align="center">
                 <MusicPlayer {...{ ...song }}></MusicPlayer>

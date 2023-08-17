@@ -30,6 +30,13 @@ export default function MusicPlayer(props) {
         fetch("/spotify/play", requestOptions);
     };
 
+    const skipSong = () => {
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        };
+        fetch("/spotify/skip", requestOptions);
+    };
     // pass in song data from Room.js as prop
     return (
         <Card>
@@ -56,9 +63,17 @@ export default function MusicPlayer(props) {
                                 <PlayArrowIcon />
                             )}
                         </IconButton>
-                        <IconButton>
+                        {/* without arrow function, song keeps skipping infinitely?? */}
+                        <IconButton onClick={() => skipSong()}>
                             <SkipNextIcon />
                         </IconButton>
+                        <Typography
+                            color="textSecondary"
+                            variant="caption"
+                            align="right"
+                        >
+                            {props.votes} / {props.votes_required}
+                        </Typography>
                     </div>
                 </Grid>
             </Grid>
